@@ -2,12 +2,24 @@
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+.venv/
+venv/
 
-# Env files
+# Environment files
 .env
+.env.local
+.env.*.local
 
-# Docker
+# Logs
 *.log
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker / app data
 docker-data/
 storage/
 volumes/
@@ -15,5 +27,8 @@ volumes/
 # AnythingLLM storage
 /opt/anythingllm/storage
 
-# OS
+# OS / editor files
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
