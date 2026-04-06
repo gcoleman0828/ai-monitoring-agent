@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Exit on error
+set -e
+
+# --- Check inside git repo ---
+if [ ! -d ".git" ]; then
+  echo "❌ Not inside a Git repository"
+  exit 1
+fi
+
+# --- Get current branch ---
+BRANCH=$(git branch --show-current)
+
+# --- Ask for commit message if not provided ---
+if [ -z "$1" ]; then
+  read -p "Enter commit message: " MSG
+else
+  MSG="$1"
+fi
+
+# --- Warn if .env is tracked ---
+if git ls-files | grep -q ".env"; then
+  echo "⚠️ WARNING: .env file is tracked in git!"
+fi
+
+echo "📦 Adding files..."
+git add .
+
+echo "🔄 Pulling latest changes..."
+git pull --rebase origin $BRANCH || echo "⚠️ Pull skipped"
+
+echo "📝 Committing..."
+git commit -m "$MSG" || echo "⚠️ Nothing to commit"
+
+echo "🚀 Pushing to GitHub..."
+git push -u origin $BRANCH
+
+echo "✅ Done!"
