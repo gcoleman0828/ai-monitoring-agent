@@ -66,7 +66,7 @@ app = FastAPI(
 #
 # Example:
 # "http://192.168.0.192:19999/" becomes "http://192.168.0.192:19999"
-NETDATA_BASE_URL = os.getenv("NETDATA_BASE_URL", "http://YOUR_IP_ADDRESS:19999").rstrip("/")
+NETDATA_BASE_URL = os.getenv("NETDATA_BASE_URL", "http://192.168.0.192:19999").rstrip("/")
 
 # NETDATA_API_TOKEN:
 # Read an optional Netdata API token.

@@ -1,8 +1,19 @@
-.env
-*.log
+# Python
 __pycache__/
 *.pyc
-venv/
-data/
-*.db
-*.sqlite
+*.pyo
+
+# Env files
+.env
+
+# Docker
+*.log
+docker-data/
+storage/
+volumes/
+
+# AnythingLLM storage
+/opt/anythingllm/storage
+
+# OS
+.DS_Store

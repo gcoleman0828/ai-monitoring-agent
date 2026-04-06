@@ -1,4 +1,11 @@
 services:
+  fastapi:
+    build: ./fastapi
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
   anythingllm:
     image: mintplexlabs/anythingllm:latest
     container_name: anythingllm
@@ -8,6 +15,16 @@ services:
       - STORAGE_DIR=/app/server/storage
     volumes:
       - /opt/anythingllm/storage:/app/server/storage
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    depends_on:
+      - fastapi
+      - ollama
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - /opt/ollama:/root/.ollama
     restart: unless-stopped
