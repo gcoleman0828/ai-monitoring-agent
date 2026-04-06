@@ -1,47 +1,6 @@
-#!/usr/bin/env bash
-set -Eeuo pipefail
-
-if [[ ! -d .git ]]; then
-  echo "❌ Not inside a Git repository."
-  exit 1
-fi
-
-BRANCH="$(git branch --show-current)"
-if [[ -z "${BRANCH}" ]]; then
-  echo "❌ Could not determine current Git branch."
-  exit 1
-fi
-
-if [[ $# -gt 0 ]]; then
-  MSG="$*"
-else
-  read -rp "Enter commit message: " MSG
-fi
-
-if [[ -z "${MSG// }" ]]; then
-  echo "❌ Commit message cannot be empty."
-  exit 1
-fi
-
-if git ls-files --error-unmatch .env >/dev/null 2>&1; then
-  echo "⚠️ WARNING: .env is tracked in git!"
-fi
-
-echo "🔄 Pulling latest changes first..."
-git pull --rebase origin "$BRANCH"
-
-echo "📦 Adding files..."
+cd ~/ai-monitoring-agent
+git status
+git pull --rebase origin main
 git add .
-
-if git diff --cached --quiet; then
-  echo "✅ Nothing to commit."
-  exit 0
-fi
-
-echo "📝 Committing..."
-git commit -m "$MSG"
-
-echo "🚀 Pushing to GitHub..."
-git push -u origin "$BRANCH"
-
-echo "✅ Done!"
+git commit -m "describe your change here"
+git push origin main
