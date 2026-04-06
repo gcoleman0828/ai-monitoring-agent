@@ -1,39 +1,47 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
-# Exit on error
-set -e
-
-# --- Check inside git repo ---
-if [ ! -d ".git" ]; then
-  echo "❌ Not inside a Git repository"
+if [[ ! -d .git ]]; then
+  echo "❌ Not inside a Git repository."
   exit 1
 fi
 
-# --- Get current branch ---
-BRANCH=$(git branch --show-current)
+BRANCH="$(git branch --show-current)"
+if [[ -z "${BRANCH}" ]]; then
+  echo "❌ Could not determine current Git branch."
+  exit 1
+fi
 
-# --- Ask for commit message if not provided ---
-if [ -z "$1" ]; then
-  read -p "Enter commit message: " MSG
+if [[ $# -gt 0 ]]; then
+  MSG="$*"
 else
-  MSG="$1"
+  read -rp "Enter commit message: " MSG
 fi
 
-# --- Warn if .env is tracked ---
-if git ls-files | grep -q ".env"; then
-  echo "⚠️ WARNING: .env file is tracked in git!"
+if [[ -z "${MSG// }" ]]; then
+  echo "❌ Commit message cannot be empty."
+  exit 1
 fi
+
+if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+  echo "⚠️ WARNING: .env is tracked in git!"
+fi
+
+echo "🔄 Pulling latest changes first..."
+git pull --rebase origin "$BRANCH"
 
 echo "📦 Adding files..."
 git add .
 
-echo "🔄 Pulling latest changes..."
-git pull --rebase origin $BRANCH || echo "⚠️ Pull skipped"
+if git diff --cached --quiet; then
+  echo "✅ Nothing to commit."
+  exit 0
+fi
 
 echo "📝 Committing..."
-git commit -m "$MSG" || echo "⚠️ Nothing to commit"
+git commit -m "$MSG"
 
 echo "🚀 Pushing to GitHub..."
-git push -u origin $BRANCH
+git push -u origin "$BRANCH"
 
 echo "✅ Done!"
