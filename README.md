@@ -163,10 +163,11 @@ sudo lsof -i :8000
 📦 Backup / restore flows
 🔄 CI/CD pipeline
 
-## 🛠️ Troubleshooting
+
+##  🛠️ Troubleshooting
 Docker Permission Issue
 
-## 👤 Author
+##  👤 Author
 
 Gregg Coleman
 Director of Solution Architecture
