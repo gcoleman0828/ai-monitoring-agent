@@ -1,191 +1,156 @@
-# 🚀 AI Monitoring Stack  
-### Netdata + FastAPI + AnythingLLM + Ollama
+AI Monitoring Agent (Local AI Stack)
 
-![Docker](https://img.shields.io/badge/Docker-Ready-blue)
-![Platform](https://img.shields.io/badge/Platform-Ubuntu%20%7C%20Linux-green)
-![AI](https://img.shields.io/badge/LLM-Ollama%20%28llama3%29-orange)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
+A fully self-hosted AI-powered monitoring system that integrates:
 
-A fully containerized, local-first AI monitoring platform that lets you query infrastructure metrics using natural language.
+📊 Netdata (metrics collection)
+⚡ FastAPI (middleware / API layer)
+🤖 AnythingLLM (AI interface + agents)
+🧠 Ollama (local LLMs like llama3)
 
----
+This stack allows you to ask natural language questions like:
 
-# 📚 Table of Contents
+"What is the CPU usage on recipe-server?"
 
-- [Overview](#overview)
-- [Architecture](#architecture)
-- [Project Structure](#project-structure)
-- [Quick Start](#quick-start)
-- [Bootstrap Script](#bootstrap-script)
-- [Environment Configuration](#environment-configuration)
-- [AnythingLLM Setup](#anythingllm-setup)
-- [Flow Configuration](#flow-configuration)
-- [Testing](#testing)
-- [Agent Usage](#agent-usage)
-- [Troubleshooting](#troubleshooting)
-- [Common Commands](#common-commands)
-- [Git Notes](#git-notes)
-- [Future Enhancements](#future-enhancements)
-
----
-
-# 🧠 Overview
-
-This stack enables:
-
-- 📊 Real-time infrastructure monitoring via Netdata  
-- 🤖 AI-powered analysis using Ollama (llama3)  
-- 🔗 Middleware abstraction via FastAPI  
-- 💬 Natural language querying through AnythingLLM  
-
----
-
-# 🏗️ Architecture
-
-<details>
-<summary>🔍 High-Level Architecture</summary>
-
-```text
-+-------------------+
-|   User Browser    |
-|  http://VM:3001   |
-+---------+---------+
-          |
-          v
-+-------------------+
-|   AnythingLLM     |
-|   Agent / Flows   |
-+---------+---------+
-          |
-          v
-+-------------------+
-|      FastAPI      |
-| Monitoring API    |
-+----+----------+---+
-     |          |
-     v          v
-+--------+   +---------+
-|Netdata |   | Ollama  |
-|Servers |   | llama3  |
-+--------+   +---------+
-
-</details> <details> <summary>🐳 Docker Networking</summary>
-
-Docker Network
-
-anythingllm ─────► fastapi ─────► Netdata (external)
-      │                │
-      └──────────────► ollama
-
-</details>
-
+🏗️ Architecture Overview
+Netdata → FastAPI → AnythingLLM → Ollama
+Netdata collects system metrics
+FastAPI normalizes and exposes endpoints
+AnythingLLM calls APIs via agent flows
+Ollama processes natural language locally
+⚙️ Features
+✅ Fully local (no external API required)
+✅ Natural language monitoring
+✅ Multi-server support
+✅ Extensible FastAPI endpoints
+✅ Docker-based deployment
+✅ One-command bootstrap for new VMs
 📁 Project Structure
-
-ai-monitoring-stack/
+ai-monitoring-agent/
 ├── docker-compose.yml
+├── bootstrap.sh
+├── install-ai-stack.sh
+├── fastapi/
+│   ├── main.py
+│   ├── routes/
+│   └── services/
+├── docs/
 ├── .env.example
 ├── .gitignore
-├── README.md
-├── bootstrap-ai-monitoring-stack.sh
-├── data/
-│   ├── anythingllm/
-│   └── ollama/
-└── fastapi/
-    ├── Dockerfile
-    ├── requirements.txt
-    └── main.py
+└── README.md
+🚀 Quick Start (One Command Install)
 
-⚡ Quick Start
+Run this on a fresh Ubuntu VM:
 
-git clone https://github.com/YOUR-ORG/YOUR-REPO.git
-cd YOUR-REPO
-chmod +x bootstrap-ai-monitoring-stack.sh
-./bootstrap-ai-monitoring-stack.sh
+curl -fsSL https://raw.githubusercontent.com/gcoleman0828/ai-monitoring-agent/main/bootstrap.sh | bash
 
-Then:
+This will:
 
-nano .env
-docker compose up -d --build fastapi
+Install Docker + dependencies
+Clone the repo
+Start containers
+Pull llama3
+Initialize environment
+🔧 Manual Installation
+1. Clone Repo
+git clone https://github.com/gcoleman0828/ai-monitoring-agent.git
+cd ai-monitoring-agent
+2. Run Installer
+chmod +x install-ai-stack.sh
+./install-ai-stack.sh
+3. Access Services
+Service	URL
+AnythingLLM	http://localhost:3001
+FastAPI	http://localhost:8000
+Ollama	http://localhost:11434
+🤖 AnythingLLM Setup (First Time)
+Open: http://localhost:3001
+Create your account
+Go to Settings → LLM
+Select:
+Provider: Ollama
+Model: llama3
+🔌 FastAPI Endpoints
 
+Example endpoints:
 
-<details> <summary>📜 Full Bootstrap Script</summary>
+/health
+/summary?host=recipe-server
+/cpu?host=recipe-server
+/memory?host=recipe-server
+🧪 Example API Response
+{
+  "host": "recipe-server",
+  "cpu_usage": 23.5,
+  "memory_usage": 61.2,
+  "status": "healthy"
+}
+🤖 AnythingLLM Agent Flow
 
-ENTER SCRIPT HERE
+Use API Call block:
 
-</details>
+URL:
+http://host.docker.internal:8000/summary?host=${host}
 
-⚙️ Environment Configuration
+Define variable:
 
-Edit:
+host = recipe-server
+🧠 Example Prompts
+"What is the CPU usage on recipe-server?"
+"Compare memory usage across all servers"
+"Is any server under heavy load?"
+🐳 Docker Usage
 
-nano .env
+Start:
 
-Example:
-
-RECIPE_SERVER_URL=http://192.168.0.101:19999
-AI_CHATBOT_URL=http://192.168.0.133:19999
-COLEMANPLEX_URL=http://192.168.0.150:19999
-OLLAMA_BASE_URL=http://ollama:11434
-REQUEST_TIMEOUT=10
-
-🌐 AnythingLLM Setup
-<details> <summary>👤 First-Time Setup</summary>
-Open:
-http://YOUR_VM_IP:3001
-Create account:
-Email
-Password
-Workspace
-Go to Settings → LLM Preferences
-Setting	Value
-Provider	Ollama
-URL	http://ollama:11434
-Fetch models
-Select llama3
-Save
-</details>
-🔧 Flow Configuration
-
-Use these API URLs inside AnythingLLM flows:
-
-http://fastapi:8000/summary?host=${host}
-http://fastapi:8000/cpu?host=${host}
-http://fastapi:8000/memory?host=${host}
-http://fastapi:8000/status?host=${host}
-http://fastapi:8000/anomalies?host=${host}
-http://fastapi:8000/compare?host1=${host1}&host2=${host2}
-
-❌ Avoid:
-
-localhost
-host.docker.internal
-🧪 Testing
-<details> <summary>🧪 Run All Tests</summary>
-docker ps
-curl http://localhost:8000/health
-curl http://localhost:11434/api/tags
-docker exec -it ollama ollama list
-</details>
-🤖 Agent Usage
-
-Click the Agent button and try:
-
-@agent What is the status of recipe-server?
-More prompts:
-@agent Show CPU usage for ai-chatbot
-@agent Are there any anomalies on colemanplex?
-@agent Compare recipe-server and ai-chatbot
-
-📦 Common Commands
 docker compose up -d
-docker compose up -d --build fastapi
+
+Stop:
+
 docker compose down
-📁 Git Notes
 
-This project gives you:
+View logs:
 
-🔄 Fully portable Docker stack
-🧠 Local LLM (no external cost)
-📊 Real-time infrastructure insights
-🤖 AI-driven operations interface
+docker logs -f anythingllm
+🔐 Environment Variables
 
+Copy example:
+
+cp .env.example .env
+
+Never commit .env to GitHub.
+
+🧼 Git Workflow (Recommended)
+git status
+git pull --rebase origin main
+git add .
+git commit -m "your message"
+git push origin main
+🛠️ Troubleshooting
+Docker Permission Issue
+sudo usermod -aG docker $USER
+
+Log out and back in.
+
+Ollama Model Missing
+docker exec -it <ollama_container> ollama pull llama3
+FastAPI Not Responding
+curl http://localhost:8000/health
+Port Already in Use
+sudo lsof -i :8000
+🔮 Future Enhancements
+📈 Anomaly detection endpoints
+📊 Historical trend analysis
+🚨 Alerting system
+☁️ AWS integration
+📦 Backup / restore flows
+🔄 CI/CD pipeline
+👤 Author
+
+Gregg Coleman
+Director of Solution Architecture
+AI / Cloud / Infrastructure
+
+⚠️ Disclaimer
+
+This project is for educational and internal use.
+Ensure proper security before exposing externally.
