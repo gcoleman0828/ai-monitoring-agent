@@ -162,6 +162,10 @@ sudo lsof -i :8000
 ☁️ AWS integration
 📦 Backup / restore flows
 🔄 CI/CD pipeline
+
+🛠️ Troubleshooting
+Docker Permission Issue
+
 👤 Author
 
 Gregg Coleman
