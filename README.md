@@ -15,6 +15,9 @@ This stack allows you to ask natural language questions like:
 
 ## 🏗️ Architecture Overview
 
+### Agent Flow
+![Agent Flow](docs/AI system monitoring architecture diagrams.png)
+
 ```
 Netdata → FastAPI → AnythingLLM → Ollama
 ```
