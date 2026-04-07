@@ -15,14 +15,14 @@ This stack allows you to ask natural language questions like:
 
 ## 🏗️ Architecture Overview
 
-
+```
 Netdata → FastAPI → AnythingLLM → Ollama
+```
 
-
-- Netdata collects system metrics
-- FastAPI normalizes and exposes endpoints
-- AnythingLLM calls APIs via agent flows
-- Ollama processes natural language locally
+- Netdata collects system metrics  
+- FastAPI normalizes and exposes endpoints  
+- AnythingLLM calls APIs via agent flows  
+- Ollama processes natural language locally  
 
 ---
 
@@ -39,20 +39,20 @@ Netdata → FastAPI → AnythingLLM → Ollama
 
 ## 📁 Project Structure
 
-
+```
 ai-monitoring-agent/
 ├── docker-compose.yml
 ├── bootstrap.sh
 ├── install-ai-stack.sh
 ├── fastapi/
-│ ├── main.py
-│ ├── routes/
-│ └── services/
+│   ├── main.py
+│   ├── routes/
+│   └── services/
 ├── docs/
 ├── .env.example
 ├── .gitignore
 └── README.md
-
+```
 
 ---
 
@@ -62,121 +62,197 @@ Run this on a fresh Ubuntu VM:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/gcoleman0828/ai-monitoring-agent/main/bootstrap.sh | bash
+```
 
 This will:
 
-Install Docker + dependencies
-Clone the repo
-Start containers
-Pull llama3
-Initialize environment
-🔧 Manual Installation
-1. Clone Repo
+- Install Docker + dependencies  
+- Clone the repo  
+- Start containers  
+- Pull `llama3`  
+- Initialize environment  
+
+---
+
+## 🔧 Manual Installation
+
+### 1. Clone Repo
+
+```bash
 git clone https://github.com/gcoleman0828/ai-monitoring-agent.git
 cd ai-monitoring-agent
-2. Run Installer
+```
+
+### 2. Run Installer
+
+```bash
 chmod +x install-ai-stack.sh
 ./install-ai-stack.sh
-3. Access Services
-Service	URL
-AnythingLLM	http://localhost:3001
+```
 
-FastAPI	http://localhost:8000
+### 3. Access Services
 
-Ollama	http://localhost:11434
-🤖 AnythingLLM Setup (First Time)
-Open: http://localhost:3001
-Create your account
-Go to Settings → LLM
-Select:
-Provider: Ollama
-Model: llama3
-🔌 FastAPI Endpoints
+| Service     | URL                    |
+|-------------|------------------------|
+| AnythingLLM | http://localhost:3001 |
+| FastAPI     | http://localhost:8000 |
+| Ollama      | http://localhost:11434 |
 
-Example endpoints:
+---
 
+## 🤖 AnythingLLM Setup (First Time)
+
+1. Open: http://localhost:3001  
+2. Create your account  
+3. Go to **Settings → LLM**  
+4. Select:
+   - Provider: **Ollama**
+   - Model: **llama3**
+
+---
+
+## 🔌 FastAPI Endpoints
+
+```
 /health
 /summary?host=recipe-server
 /cpu?host=recipe-server
 /memory?host=recipe-server
-🧪 Example API Response
+```
+
+---
+
+## 🧪 Example API Response
+
+```json
 {
   "host": "recipe-server",
   "cpu_usage": 23.5,
   "memory_usage": 61.2,
   "status": "healthy"
 }
-🤖 AnythingLLM Agent Flow
+```
 
-Use API Call block:
+---
 
+## 🤖 AnythingLLM Agent Flow
+
+```
 http://host.docker.internal:8000/summary?host=${host}
+```
 
-# Define variable:
-
+Variable:
+```
 host = recipe-server
-🧠 Example Prompts
-"What is the CPU usage on recipe-server?"
-"Compare memory usage across all servers"
-"Is any server under heavy load?"
-🐳 Docker Usage
+```
+
+---
+
+## 🧠 Example Prompts
+
+- "What is the CPU usage on recipe-server?"
+- "Compare memory usage across all servers"
+- "Is any server under heavy load?"
+
+---
+
+## 🐳 Docker Usage
 
 Start:
-
+```bash
 docker compose up -d
+```
 
 Stop:
-
+```bash
 docker compose down
+```
 
 View logs:
-
+```bash
 docker logs -f anythingllm
-🔐 Environment Variables
+```
+
+---
+
+## 🔐 Environment Variables
+
+```bash
 cp .env.example .env
+```
 
-⚠️ Never commit .env to GitHub.
+⚠️ Never commit `.env` to GitHub.
 
-🧼 Git Workflow (Recommended)
+---
+
+## 🧼 Git Workflow (Recommended)
+
+```bash
 git status
 git pull --rebase origin main
 git add .
 git commit -m "your message"
 git push origin main
-🛠️ Troubleshooting
-Docker Permission Issue
+```
+
+---
+
+## 🛠️ Troubleshooting
+
+### Docker Permission Issue
+
+```bash
 sudo usermod -aG docker $USER
+```
 
 Log out and back in.
 
-Ollama Model Missing
+---
+
+### Ollama Model Missing
+
+```bash
 docker exec -it <ollama_container> ollama pull llama3
-FastAPI Not Responding
-curl http://localhost:8000/health
-Port Already in Use
-sudo lsof -i :8000
-🔮 Future Enhancements
-📈 Anomaly detection endpoints
-📊 Historical trend analysis
-🚨 Alerting system
-☁️ AWS integration
-📦 Backup / restore flows
-🔄 CI/CD pipeline
-
-
-##  🛠️ Troubleshooting
-Docker Permission Issue
-
-##  👤 Author
-
-Gregg Coleman
-Director of Solution Architecture
-AI / Cloud / Infrastructure
-
-⚠️ Disclaimer
-
-This project is for educational and internal use.
-Ensure proper security before exposing externally.
-
+```
 
 ---
+
+### FastAPI Not Responding
+
+```bash
+curl http://localhost:8000/health
+```
+
+---
+
+### Port Already in Use
+
+```bash
+sudo lsof -i :8000
+```
+
+---
+
+## 🔮 Future Enhancements
+
+- 📈 Anomaly detection endpoints
+- 📊 Historical trend analysis
+- 🚨 Alerting system
+- ☁️ AWS integration
+- 📦 Backup / restore flows
+- 🔄 CI/CD pipeline
+
+---
+
+## 👤 Author
+
+**Gregg Coleman**  
+Director of Solution Architecture  
+AI / Cloud / Infrastructure  
+
+---
+
+## ⚠️ Disclaimer
+
+This project is for educational and internal use.  
+Ensure proper security before exposing externally.
