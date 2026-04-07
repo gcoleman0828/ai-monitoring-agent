@@ -112,7 +112,7 @@ Use API Call block:
 
 http://host.docker.internal:8000/summary?host=${host}
 
-Define variable:
+# Define variable:
 
 host = recipe-server
 🧠 Example Prompts
@@ -163,10 +163,10 @@ sudo lsof -i :8000
 📦 Backup / restore flows
 🔄 CI/CD pipeline
 
-🛠️ Troubleshooting
+## 🛠️ Troubleshooting
 Docker Permission Issue
 
-👤 Author
+## 👤 Author
 
 Gregg Coleman
 Director of Solution Architecture
