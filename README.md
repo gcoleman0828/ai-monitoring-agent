@@ -114,6 +114,129 @@ chmod +x install-ai-stack.sh
 
 ---
 
+## 🔧 Step 1: Create a New Agent Flow
+
+1. Open AnythingLLM  
+   ```
+   http://localhost:3001
+   ```
+
+2. Navigate to:
+   ```
+   Workspace → Agent Flows
+   ```
+
+3. Click:
+   ```
+   + New Flow
+   ```
+
+4. Name it:
+   ```
+   Netdata Monitoring Agent
+   ```
+
+---
+
+## 🔌 Step 2: Add API Call Tool
+
+Add an **API Call block** with the following configuration:
+
+### URL
+```
+http://host.docker.internal:8000/summary?host=${host}
+```
+
+### Method
+```
+GET
+```
+
+---
+
+## 🧠 Step 3: Define Input Variable
+
+Create a variable:
+
+```
+Name: host
+Type: string
+```
+
+### Example values:
+- recipe-server  
+- ai-chatbot  
+- colemanplex  
+
+---
+
+## 🧱 Step 4: Tool Description (CRITICAL)
+
+Use this description to ensure the agent **always uses the tool instead of guessing**:
+
+```
+This tool MUST be used for any question related to system performance, metrics, or server health.
+
+Always call this API to retrieve real-time data before responding.
+
+Do NOT answer from memory or make assumptions.
+
+Supported queries include:
+- CPU usage
+- Memory usage
+- System status
+- Server comparisons
+
+The "host" parameter must match one of the known systems:
+recipe-server, ai-chatbot, colemanplex
+
+If the user question relates to infrastructure, monitoring, or system performance, this tool is REQUIRED.
+```
+
+---
+
+## 🔗 Step 5: Connect Flow to Workspace
+
+1. Go to:
+   ```
+   Workspace Settings → Tools
+   ```
+
+2. Add the Agent Flow as an available tool
+
+3. Ensure it is:
+   - ✅ Enabled
+   - ✅ Available to the chat model
+
+---
+
+## 🧪 Step 6: Test the Agent
+
+Try queries like:
+
+```
+What is the CPU usage on recipe-server?
+```
+
+```
+Compare memory usage across all servers
+```
+
+```
+Is any system under heavy load?
+```
+
+---
+
+## ✅ Expected Behavior
+
+- The agent triggers the API call  
+- FastAPI queries Netdata  
+- JSON response is returned  
+- Ollama generates a natural language answer  
+
+---
+
 ## 🔌 FastAPI Endpoints
 
 ```
