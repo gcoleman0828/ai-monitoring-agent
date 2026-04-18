@@ -4,7 +4,7 @@ set -euo pipefail
 ########################################
 # Configuration
 ########################################
-REPO_URL="${REPO_URL:-https://github.com/YOUR_GITHUB_USERNAME/ai-monitoring-agent.git}"
+REPO_URL="${REPO_URL:-https://github.com/gcoleman0828/ai-monitoring-agent.git}"
 REPO_DIR="${REPO_DIR:-ai-monitoring-agent}"
 BRANCH="${BRANCH:-main}"
 AUTO_START_API="${AUTO_START_API:-yes}"
@@ -70,7 +70,7 @@ if [ "$CREATE_ENV_IF_MISSING" = "yes" ]; then
     log "Creating .env from .env.example"
     cp .env.example .env
     echo "Created .env from template."
-    echo "IMPORTANT: Edit .env with your real Netdata URLs if needed."
+    echo "IMPORTANT: Edit .env with your real Netdata URLs before using the app."
   else
     log ".env already exists or .env.example missing"
   fi
@@ -95,7 +95,8 @@ if [ "$AUTO_START_API" = "yes" ]; then
   log "Starting FastAPI in background"
   nohup bash scripts/start-api.sh > api.log 2>&1 &
   sleep 5
-  echo "FastAPI started in background. Logs: $(pwd)/api.log"
+  echo "FastAPI started in background."
+  echo "Logs: $(pwd)/api.log"
 else
   log "Skipping API auto-start"
 fi
@@ -114,9 +115,9 @@ fi
 # Done
 ########################################
 log "Bootstrap complete"
-
 echo "Useful commands:"
 echo "  cd $REPO_DIR"
+echo "  nano .env"
 echo "  source .venv/bin/activate"
 echo "  bash scripts/start-api.sh"
 echo "  bash scripts/test-endpoints.sh"

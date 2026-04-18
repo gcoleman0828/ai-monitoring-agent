@@ -5,10 +5,10 @@ echo "========================================"
 echo "AI Monitoring Agent - Host Install Start"
 echo "========================================"
 
-echo "[1/6] Updating Ubuntu packages..."
+echo "[1/7] Updating Ubuntu packages..."
 sudo apt update
 
-echo "[2/6] Installing required packages..."
+echo "[2/7] Installing required packages..."
 sudo apt install -y \
   python3 \
   python3-pip \
@@ -18,25 +18,36 @@ sudo apt install -y \
   curl \
   git
 
-echo "[3/6] Enabling Docker..."
+echo "[3/7] Enabling Docker..."
 sudo systemctl enable docker
 sudo systemctl start docker
 
-echo "[4/6] Creating Python virtual environment if missing..."
+echo "[4/7] Adding current user to docker group..."
+sudo usermod -aG docker "$USER" || true
+
+echo "[5/7] Creating Python virtual environment if missing..."
 if [ ! -d ".venv" ]; then
   python3 -m venv .venv
 fi
 
-echo "[5/6] Installing Python dependencies..."
+echo "[6/7] Installing Python dependencies..."
 source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 deactivate
 
-echo "[6/6] Setting script permissions..."
+echo "[7/7] Setting script permissions..."
+chmod +x bootstrap.sh || true
 chmod +x verify-install.sh || true
 chmod +x scripts/*.sh || true
 
 echo "========================================"
 echo "Install complete."
 echo "========================================"
+echo
+echo "NOTE:"
+echo "- If docker commands fail without sudo, log out and back in."
+echo "- Next steps:"
+echo "    cp .env.example .env"
+echo "    nano .env"
+echo "    bash scripts/start-api.sh"
