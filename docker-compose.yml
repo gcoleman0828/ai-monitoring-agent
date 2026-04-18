@@ -9,3 +9,30 @@ services:
     env_file:
       - .env
     restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
+  anythingllm:
+    image: mintplexlabs/anythingllm:v1.12.0
+    container_name: anythingllm
+    ports:
+      - "3001:3001"
+    volumes:
+      - anythingllm_storage:/app/server/storage
+    depends_on:
+      - ollama
+      - ai-monitoring-api
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  ollama_data:
+  anythingllm_storage:

@@ -41,13 +41,6 @@ chmod +x bootstrap.sh || true
 chmod +x verify-install.sh || true
 chmod +x scripts/*.sh || true
 
-echo "========================================"
-echo "Install complete."
-echo "========================================"
 echo
-echo "NOTE:"
-echo "- If docker commands fail without sudo, log out and back in."
-echo "- Next steps:"
-echo "    cp .env.example .env"
-echo "    nano .env"
-echo "    bash scripts/start-api.sh"
+echo "Install complete."
+echo "If docker permission errors occur, log out and back in."
