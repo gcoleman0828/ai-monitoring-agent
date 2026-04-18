@@ -52,6 +52,9 @@ echo "Open AnythingLLM: http://localhost:3001"
 echo "FastAPI middleware : http://localhost:8000"
 echo "Ollama API         : http://localhost:11434"
 echo
-echo "NOTE: If 'docker ps' fails, run 'newgrp docker' or log out and back in."
+echo "NOTE:"
+echo "- Bootstrap uses sudo for Docker commands so it can complete in one run."
+echo "- After install, run 'newgrp docker' or log out and back in if you want to use docker without sudo."
+echo
 echo "Next required manual step:"
 echo "Open AnythingLLM in the browser and complete first-run UI setup."
