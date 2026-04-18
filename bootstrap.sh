@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-https://github.com/gcoleman0828/ai-monitoring-agent.git}"
-REPO_DIR="${REPO_DIR:-ai-monitoring-agent}"
-BRANCH="${BRANCH:-main}"
 CREATE_ENV_IF_MISSING="${CREATE_ENV_IF_MISSING:-yes}"
 PULL_OLLAMA_MODEL="${PULL_OLLAMA_MODEL:-yes}"
 
@@ -14,34 +11,15 @@ log() {
   echo "=================================================="
 }
 
-log "Checking required host tools"
+log "Checking that script is running from repo root"
 
-if ! command -v git >/dev/null 2>&1; then
-  sudo apt update
-  sudo apt install -y git
-fi
-
-if ! command -v curl >/dev/null 2>&1; then
-  sudo apt update
-  sudo apt install -y curl
-fi
-
-if [ -d "$REPO_DIR/.git" ]; then
-  log "Repo already exists. Updating existing repo"
-  cd "$REPO_DIR"
-  git fetch origin
-  git checkout "$BRANCH"
-  git pull origin "$BRANCH"
-else
-  log "Cloning repo"
-  git clone --branch "$BRANCH" "$REPO_URL" "$REPO_DIR"
-  cd "$REPO_DIR"
+if [ ! -f "docker-compose.yml" ] || [ ! -f "install-ai-stack.sh" ]; then
+  echo "ERROR: Run this script from the ai-monitoring-agent repo root."
+  exit 1
 fi
 
 log "Setting script permissions"
-chmod +x bootstrap.sh || true
-chmod +x install-ai-stack.sh || true
-chmod +x verify-install.sh || true
+chmod +x *.sh || true
 chmod +x scripts/*.sh || true
 
 if [ "$CREATE_ENV_IF_MISSING" = "yes" ]; then
@@ -74,5 +52,6 @@ echo "Open AnythingLLM: http://localhost:3001"
 echo "FastAPI middleware : http://localhost:8000"
 echo "Ollama API         : http://localhost:11434"
 echo
+echo "NOTE: If 'docker ps' fails, run 'newgrp docker' or log out and back in."
 echo "Next required manual step:"
 echo "Open AnythingLLM in the browser and complete first-run UI setup."
