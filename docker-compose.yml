@@ -1,39 +1,43 @@
 services:
-  ai-monitoring-api:
-    build: .
-    container_name: ai-monitoring-api
-    ports:
-      - "8000:8000"
-    env_file:
-      - .env
-    restart: unless-stopped
-
   ollama:
-    image: ollama/ollama
+    image: ollama/ollama:latest
     container_name: ollama
     ports:
-      - "11434:11434"
+      - "${OLLAMA_PORT:-11434}:11434"
     volumes:
       - ollama_data:/root/.ollama
     restart: unless-stopped
 
-  anythingllm:
-    image: mintplexlabs/anythingllm:1.12.0
-    container_name: anythingllm
+  fastapi:
+    build:
+      context: ./middleware
+      dockerfile: Dockerfile
+    container_name: fastapi
+    env_file:
+      - .env
     ports:
-      - "3001:3001"
-    cap_add:
-      - SYS_ADMIN
-    volumes:
-      - anythingllm_storage:/app/server/storage
-    environment:
-      STORAGE_DIR: /app/server/storage
+      - "${FASTAPI_PORT:-8000}:8000"
+    restart: unless-stopped
     depends_on:
       - ollama
-      - ai-monitoring-api
+
+  anythingllm:
+    image: mintplexlabs/anythingllm:latest
+    container_name: anythingllm
+    ports:
+      - "${ANYTHINGLLM_PORT:-3001}:3001"
+    environment:
+      STORAGE_DIR: /app/server/storage
+      JWT_SECRET: ${JWT_SECRET}
+      LLM_PROVIDER: ollama
+      OLLAMA_BASE_PATH: http://ollama:11434
+      OLLAMA_MODEL_PREF: ${OLLAMA_MODEL:-llama3}
+    volumes:
+      - anythingllm_storage:/app/server/storage
+    depends_on:
+      - ollama
+      - fastapi
     restart: unless-stopped
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
 volumes:
   ollama_data:
