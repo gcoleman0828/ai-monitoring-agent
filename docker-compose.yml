@@ -26,7 +26,6 @@ services:
       - SYS_ADMIN
     volumes:
       - anythingllm_storage:/app/server/storage
-      - ./anythingllm/.env:/app/server/.env
     environment:
       STORAGE_DIR: /app/server/storage
     depends_on:
