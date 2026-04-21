@@ -14,7 +14,7 @@ ALLOWED_HOSTS = [
 ]
 
 NETDATA_HOSTS = {
-    "recipe-server": os.getenv("NETDATA_URL_RECIPE", ""),
-    "ai-chatbot": os.getenv("NETDATA_URL_AI", ""),
-    "colemanplex": os.getenv("NETDATA_URL_COLEMANPLEX", ""),
+    "recipe-server": os.getenv("NETDATA_RECIPE_SERVER_URL") or os.getenv("NETDATA_URL_RECIPE", ""),
+    "ai-chatbot": os.getenv("NETDATA_AI_CHATBOT_URL") or os.getenv("NETDATA_URL_AI", ""),
+    "colemanplex": os.getenv("NETDATA_COLEMANPLEX_URL") or os.getenv("NETDATA_URL_COLEMANPLEX", ""),
 }
