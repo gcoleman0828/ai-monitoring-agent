@@ -8,11 +8,11 @@ services:
       - ollama_data:/root/.ollama
     restart: unless-stopped
 
-  fastapi:
+  ai-monitoring-api:
     build:
       context: ./middleware
       dockerfile: Dockerfile
-    container_name: fastapi
+    container_name: ai-monitoring-api
     env_file:
       - .env
     ports:
@@ -36,7 +36,7 @@ services:
       - anythingllm_storage:/app/server/storage
     depends_on:
       - ollama
-      - fastapi
+      - ai-monitoring-api
     restart: unless-stopped
 
 volumes:
